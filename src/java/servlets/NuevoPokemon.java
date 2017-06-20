@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import beans.StukemonEJB;
+import entities.Trainer;
+import entities.Pokemon;
+import java.util.List;
 
 /**
  *
@@ -46,6 +49,43 @@ public class NuevoPokemon extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet NuevoPokemon at " + request.getContextPath() + "</h1>");
+            out.println("<form action=\"EnterPokemon\" method=\"GET\">");
+            out.println("<label>Nombre</label>");
+            out.println("<input type=\"text\" name=\"nombre\">");
+            out.println("<br>");
+            out.println("<label>Tipo</label>");
+            out.println("<input type=\"text\" name=\"tipo\">");
+            out.println("<br>");
+            out.println("<label>Habilidad</label>");
+            out.println("<input type=\"text\" name=\"habilidad\">");
+            out.println("<br>");
+            out.println("<label>ATK</label>");
+            out.println("<input type=\"text\" name=\"atk\">");
+            out.println("<br>");
+            out.println("<label>DEF</label>");
+            out.println("<input type=\"text\" name=\"def\">");
+            out.println("<br>");
+            out.println("<label>SPEED</label>");
+            out.println("<input type=\"text\" name=\"speed\">");
+            out.println("<br>");
+            out.println("<label>HP</label>");
+            out.println("<input type=\"text\" name=\"hp\">");
+            out.println("<br>");
+            out.println("<label>Entrenador</label>");
+            out.println("<select name=\"entrenador\">");
+            try{
+                List<Trainer> todosEntrenadores = ejb.selectAllTrainersWithPokemons();
+                for(Trainer actualTrainer : todosEntrenadores){
+                    out.println("<option value="+actualTrainer.getName()+">"+actualTrainer.getName()+"</option>");
+                }
+                
+            }catch(Exception e){
+            out.println("Error");
+            }
+            out.println("</select>");
+            out.println("<br>");
+            out.println("<input type=\"submit\" value=\"Register\">");
+            out.println("</form>");
             out.println("</body>");
             out.println("</html>");
         }

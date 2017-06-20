@@ -12,18 +12,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import beans.*;
-import entities.*;
 import javax.ejb.EJB;
-import servlets.*;
+import beans.StukemonEJB;
+import entities.*;
 
 /**
  *
- * @author x2382383c
+ * @author Kelvin
  */
-@WebServlet(name = "NuevoTrainer", urlPatterns = {"/NuevoTrainer"})
-public class NuevoTrainer extends HttpServlet {
-    
+@WebServlet(name = "EnterPokemon", urlPatterns = {"/EnterPokemon"})
+public class EnterPokemon extends HttpServlet {
+
     @EJB
     StukemonEJB ejb;
 
@@ -41,24 +40,31 @@ public class NuevoTrainer extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+
+            String nombre = request.getParameter("nombre");
+            String tipo = request.getParameter("tipo");
+            String habilidad = request.getParameter("habilidad");
+            Integer atk = Integer.parseInt(request.getParameter("atk"));
+            Integer def = Integer.parseInt(request.getParameter("def"));
+            Integer speed = Integer.parseInt(request.getParameter("speed"));
+            Integer hp = Integer.parseInt(request.getParameter("hp"));
+            String entrenador = request.getParameter("entrenador");
+
+            Pokemon p = new Pokemon(nombre, tipo, habilidad, atk, def, speed, hp, 0);
+            Trainer t = ejb.findTrainer(entrenador);
+            p.setTrainer(t);
+            ejb.insertPoke(p);
+
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet NuevoTrainer</title>");
+            out.println("<title>Servlet EnterPokemon</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet NuevoTrainer at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet EnterPokemon at " + request.getContextPath() + "</h1>");
 
-            String name = request.getParameter("name");
-            int pokeballs = Integer.parseInt(request.getParameter("pokeballs"));
-            Integer potions = Integer.parseInt(request.getParameter("potions"));
-            Trainer t = new Trainer(name, pokeballs, potions, 0);
-            if (ejb.insertTrainer(t)) {
-                out.println("<h1>Nuevo entrenador creado!</h1>");
-                out.println("<h1>Entrenador:"+ name + "</h1>");
-            } else {
-                out.println("<h1>El entrenador ya existe!</h1>");
-            }
+            out.println("<h1>Nuevo pokemon creado!</h1>");
+            out.println("<h1>Pokemon: " + nombre + "</h1>");
 
             out.println("</body>");
             out.println("</html>");

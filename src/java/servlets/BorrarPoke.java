@@ -12,18 +12,18 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import beans.*;
-import entities.*;
+import beans.StukemonEJB;
+import entities.Trainer;
+import entities.Pokemon;
+import java.util.List;
 import javax.ejb.EJB;
-import servlets.*;
 
 /**
  *
- * @author x2382383c
+ * @author Kelvin
  */
-@WebServlet(name = "NuevoTrainer", urlPatterns = {"/NuevoTrainer"})
-public class NuevoTrainer extends HttpServlet {
-    
+@WebServlet(name = "BorrarPoke", urlPatterns = {"/BorrarPoke"})
+public class BorrarPoke extends HttpServlet {
     @EJB
     StukemonEJB ejb;
 
@@ -44,22 +44,23 @@ public class NuevoTrainer extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet NuevoTrainer</title>");
+            out.println("<title>Servlet BorrarPoke</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet NuevoTrainer at " + request.getContextPath() + "</h1>");
-
+            out.println("<h1>Servlet BorrarPoke at " + request.getContextPath() + "</h1>");
+            
             String name = request.getParameter("name");
-            int pokeballs = Integer.parseInt(request.getParameter("pokeballs"));
-            Integer potions = Integer.parseInt(request.getParameter("potions"));
-            Trainer t = new Trainer(name, pokeballs, potions, 0);
-            if (ejb.insertTrainer(t)) {
-                out.println("<h1>Nuevo entrenador creado!</h1>");
-                out.println("<h1>Entrenador:"+ name + "</h1>");
-            } else {
-                out.println("<h1>El entrenador ya existe!</h1>");
+            Pokemon p = new Pokemon(name);
+            
+            if(ejb.existsPoke(p)){
+                if(ejb.deletePoke(name)){
+                    out.println("<h3>Se ha borrado el pokemon : "+name+"</h3>");
+                }
+                else{
+                    out.println("<h3>No se ha encontrado a : "+name+"</h3>");
+                }
             }
-
+            
             out.println("</body>");
             out.println("</html>");
         }

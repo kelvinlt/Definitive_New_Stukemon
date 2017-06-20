@@ -12,21 +12,22 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import beans.*;
-import entities.*;
+import beans.StukemonEJB;
+import entities.Trainer;
+import entities.Pokemon;
+import java.util.List;
 import javax.ejb.EJB;
-import servlets.*;
 
 /**
  *
- * @author x2382383c
+ * @author Kelvin
  */
-@WebServlet(name = "NuevoTrainer", urlPatterns = {"/NuevoTrainer"})
-public class NuevoTrainer extends HttpServlet {
-    
+@WebServlet(name = "ListadoPokemon", urlPatterns = {"/ListadoPokemon"})
+public class ListadoPokemon extends HttpServlet {
+
     @EJB
     StukemonEJB ejb;
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -41,25 +42,26 @@ public class NuevoTrainer extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+            
+            List<Pokemon> allPokemon = ejb.listaPokemonRanking();
+            
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet NuevoTrainer</title>");
+            out.println("<title>Servlet ListadoPokemon</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet NuevoTrainer at " + request.getContextPath() + "</h1>");
-
-            String name = request.getParameter("name");
-            int pokeballs = Integer.parseInt(request.getParameter("pokeballs"));
-            Integer potions = Integer.parseInt(request.getParameter("potions"));
-            Trainer t = new Trainer(name, pokeballs, potions, 0);
-            if (ejb.insertTrainer(t)) {
-                out.println("<h1>Nuevo entrenador creado!</h1>");
-                out.println("<h1>Entrenador:"+ name + "</h1>");
-            } else {
-                out.println("<h1>El entrenador ya existe!</h1>");
+            out.println("<h1>Servlet ListadoPokemon at " + request.getContextPath() + "</h1>");
+            for (Pokemon pokeActual : allPokemon) {
+            out.println("<form action=\"BorrarPoke\" method=\"GET\">");
+            out.println("<div>Nombre: " + pokeActual.getName() + "|| Nivel: "+pokeActual.getLevel()+"|| HP: " + pokeActual.getLife()+ "</div>");
+            out.println("<div>Entrenador: " + pokeActual.getTrainer().getName() + "</div>");
+            out.println("<input type=\"hidden\" name=\"name\" value="+pokeActual.getName()+">");
+            out.println("<input type=\"submit\" value=\"BORRAR\">");
+            out.println("</form>");
+            out.println("<br>");
+            
             }
-
             out.println("</body>");
             out.println("</html>");
         }
